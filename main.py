@@ -30,8 +30,7 @@ class OpenMic(App):
             p = pyaudio.PyAudio()
             stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            hostname = socket.gethostbyname
-            host_ip = socket.gethostbyname(hostname)
+            host_ip = socket.gethostbyname(socket.gethostname())
             print(host_ip)
             port = 4982
             server_socket.bind((host_ip, port))
