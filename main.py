@@ -30,7 +30,9 @@ class OpenMic(App):
             p = pyaudio.PyAudio()
             stream = p.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
             server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            host_ip = '26.211.54.29'
+            hostname = socket.gethostbyname
+            host_ip = socket.gethostbyname(hostname)
+            print(host_ip)
             port = 4982
             server_socket.bind((host_ip, port))
             server_socket.listen(5)
@@ -61,5 +63,4 @@ class OpenMic(App):
         print("Thread stopped.")
 
 if __name__ == '__main__':
-    AudioStreamingApp().run()
-#aacsdfwef
+    OpenMic().run()
