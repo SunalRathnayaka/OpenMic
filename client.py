@@ -1,11 +1,85 @@
 import socket, pyaudio, threading
 import kivy
 from kivy.uix.boxlayout import BoxLayout
+from kivy.lang import Builder
 
 kivy.require('2.3.0')
 from kivy.app import App
 
+import os, sys
+from kivy.resources import resource_add_path
 
+kv = """
+MainWidget:
+
+<MainWidget>:
+    canvas.before:
+        Color:
+            rgba: 1, 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    orientation: "vertical"
+    padding: 10
+
+    Label:
+        size_hint: 1, 0.1
+
+    TextInput:
+        id: IP_input
+        focus: True
+        multiline: False
+        pos_hint: {"center_x": 0.5}
+        text: "192.168.1.13"
+        on_text: app.process()
+        size_hint: 0.8, None
+        size: 0, 30
+
+    BoxLayout:
+        size_hint: 1, None
+        size: 0, "50dp"
+        orientation: "horizontal"
+        spacing: 20
+
+        Button:
+            text: "Connect"
+            on_press: root.connection()
+            size_hint: 0.4, None
+            size: 0, "30dp"
+
+        Button:
+            text: "Disconnect"
+            on_press: root.disconnection()
+            size_hint: 0.4, None
+            size: 0, "30dp"
+
+
+    Label:
+        size_hint: 1, 0.1
+    Label:
+        id: connection_label
+        text: "Disconnected"
+        color: 0, 0, 0, 1
+        pos_hint: {"top": 1}
+        size_hint: 1, 0.2
+        # size: 0, "10dp"
+
+    Label:
+        text: "Port: " + root.port_val
+        color: 0, 0, 0, 1
+        pos_hint: {"top": 1}
+        size_hint: 1, 0.2
+
+    Label:
+        id: error_label
+        color: 1, 0, 0, 1
+        text_size: self.width, None
+        pos_hint: {"center_x": 0.5 }
+        size_hint: 0.8, 0.2
+        height: self.texture_size[1]
+
+    Label:
+"""
 # Audio configuration (must match server's configuration)
 FORMAT = pyaudio.paInt16   # Audio format - audio quality - the quality of each samples
 CHANNELS = 1               # Mono audio -
@@ -58,23 +132,26 @@ class MainWidget(BoxLayout):
         thread.start()
         thread_run = True
 
-
     def disconnection(self):
-
         global thread_run
         thread_run = False
-
-
 
 class Client_Kivy(App):
 
     def build(self):
-        return MainWidget()
+        return Builder.load_string(kv)
     def process(self):
         global host_ip
         input_ip = self.root.ids.IP_input.text
         host_ip = input_ip
         print(host_ip)
 
+    @staticmethod
+    def resource_path(relative_path):
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath('.')
+        return os.path.join(base_path, relative_path)
 
 Client_Kivy().run()
