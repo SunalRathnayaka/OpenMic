@@ -106,7 +106,7 @@ def disconnection():
     status_label.config(text="Disconnected", fg="red")
 
 def exit():
-    client_socket.close()
+    disconnection()
     root.destroy()
 
 
